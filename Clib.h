@@ -1,110 +1,490 @@
+// ****************************************************************************************
 /**
- * Copyright (C) 2019
- * Perseo Gutierrez Izquierdo <perseo.gi98@gmail.com>
- * 
- * @file Clib.h Function headers and type definitions for Clib.c
- *  
+ * @file   Clib.h
+ * @brief  Custom implementation of useful data structures on C
+ *
+ * @details This source file includes a Linked List implementation and a Hash Map implementation.
+ *
+ * <h2> Release History </h2>
+ *
+ * <hr>
+ * @version 1.1
+ * @author Perseo Gutierrez Izquierdo <perseo.gi98@gmail.com>
+ * @date    18 Nov 2020
+ * @details
+ *	    - Initial release.
+ * @bug	    Not known bugs.
+ * @todo    Make unit tests
+ *
+ * <hr>
  */
+// ****************************************************************************************
 
+#ifndef CLIB_H
+#define CLIB_H
 
+// ****************************************************************************************
+// ********************************** Include Files ***************************************
+// ****************************************************************************************
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 
-#define CLIB_ERROR   (-1)
-#define CLIB_OK      (0)
-#define ELEMENT_ALREADY_EXIST (1)
+
+// ****************************************************************************************
+// ****************************** Definitions & Constants *********************************
+// ****************************************************************************************
+
+#define CLIB_OK                         (0)
+#define CLIB_ERROR                      (1)
+#define E_ELEMENT_ALREADY_EXIST         (2)
 
 
 
-/* Linked list headers */
 
-struct node_l{
-        void* content;
-        struct node_l* prev;
-        struct node_l* next;
-};
-typedef struct node_l node_l_t;
-
-typedef struct{
-        node_l_t* head;
-        node_l_t* tail;
-        int size;
-} linked_list_t;
+//=======================================================================================//
+//																						 //
+//								  Linked List API    								     //
+//																						 //
+//=======================================================================================//
 
 
+/********************************** STRUCTURES **************************************/
 
-linked_list_t* create_linked_list();
-
-void push_back(linked_list_t* l, void* value);
-
-void* pop_front(linked_list_t* list);
-
-void print_msg_list(linked_list_t* list);
-
-/* HasMap headers */
-
-struct node{
-        char* key;
-        void* content; // TODO : cambiar nombre por value
-        struct node* next;
+/// Internal Linked List node
+struct list_node{
+    void* content;              //< Pointer to storing node data
+    struct list_node* prev;        //< Pointer to previous node
+    struct list_node* next;        //< Pointer to next node
 };
 
-typedef struct node node_t;
+/// External Linked List node definition
+typedef struct list_node ListNode;
 
+/// Linked List structure
 typedef struct{
-        int size;
-        struct node **list;
-} hash_map_t;
+    ListNode* head;             //< Pointer to list head (this will not point to any content)
+    ListNode* tail;             //< Pointer to list tail (this will not point to any content)
+    int size;                   //< Current Linked List size (could be calculated but this increase performance)
+} LinkedList;
 
 
-hash_map_t* create_hash_map(int size);
+// ****************************************************************************************
+// create_linked_list
+// ****************************************************************************************
+/**
+ *  Initialice linked list
+ * @param[in]    none
+ * @param[out]   none
+ * @return       valid pointer to linked list structure
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *
+ *          Next   ----------    Next   ----------
+ *  NULL <-------- |        | <-------- |        |
+ *                 |  HEAD  |    Prev   |  TAIL  |     Prev
+ *                 |        | --------> |        |  --------> NULL
+ *                 ----------           ----------
+ */
+// ****************************************************************************************
+LinkedList *create_linked_list(void);
 
-int insert_elem(hash_map_t* t, char* key, void* value);
 
-int remove_elem(hash_map_t* t, char* key, void(*free_value)(void*));
+// ****************************************************************************************
+// list_push_front
+// ****************************************************************************************
+/**
+ *  Insert #value on the first position of #list
+ * @param[in]    list  Linked list to insert #value
+ * @param[in]    value Pointer to data to be stored on the first position of list
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *
+ *          Next   ----------    Next   ----------     Next   ----------
+ *  NULL <-------- |        | <-------- |        |  <-------- |        |
+ *                 |  HEAD  |    Prev   |  ....  |     Prev   |  TAIL  |     Prev
+ *                 |        | --------> |        |  --------> |        |  --------> NULL
+ *                 ----------           ----------            ----------
+ *
+ *  After #list_push_front:
+ *
+ *          mext   ----------    next   ----------     next   ----------     next   ----------
+ *  null <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
+ *                 |  head  |    prev   | #value |     prev   |  ....  |     prev   |  tail  |     prev
+ *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> null
+ *                 ----------           ----------            ----------            ----------
+ */
+// ****************************************************************************************
+void list_push_front(LinkedList *list, void *value);
 
-void* lookup(hash_map_t* t, char* key);
 
-void print_map(hash_map_t* t , void (*print)(void*));
+// ****************************************************************************************
+// list_push_back
+// ****************************************************************************************
+/**
+ *  Insert #value on the last position of #list
+ * @param[in]    list  Linked list to insert #value
+ * @param[in]    value Pointer to data to be stored on the last position of list
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *
+ *          Next   ----------    Next   ----------     Next   ----------
+ *  NULL <-------- |        | <-------- |        |  <-------- |        |
+ *                 |  HEAD  |    Prev   |  ....  |     Prev   |  TAIL  |     Prev
+ *                 |        | --------> |        |  --------> |        |  --------> NULL
+ *                 ----------           ----------            ----------
+ *
+ *  After #list_push_back:
+ *
+ *          mext   ----------    Next   ----------     Next   ----------     Next   ----------
+ *  NULL <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
+ *                 |  HEAD  |    Prev   |  ....  |     Prev   | #value |     Prev   |  TAIL  |     Prev
+ *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> NULL
+ *                 ----------           ----------            ----------            ----------
+ */
+// ****************************************************************************************
+void list_push_back(LinkedList *l, void *value);
 
 
-/* LIBPULl headers */
+// ****************************************************************************************
+// list_pop_front
+// ****************************************************************************************
+/**
+ *  Extract first value of #list, returning it
+ * @param[in]    list  Linked list to pop first value
+ * @param[out]   none
+ * @return       Pointer to data stored on the first position of #list
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *          mext   ----------    next   ----------     next   ----------     next   ----------
+ *  null <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
+ *                 |  head  |    prev   |  First |     prev   |  ....  |     prev   |  tail  |     prev
+ *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> null
+ *                 ----------           ----------            ----------            ----------
+ *
+ *  After #list_pop_front:
+ *
+ *          mext   ----------    Next   ----------    Next   ----------
+ *  NULL <-------- |        | <-------- |        | <-------- |        |
+ *                 |  HEAD  |    Prev   |  ....  |    Prev   |  TAIL  |     Prev
+ *                 |        | --------> |        | --------> |        |  --------> NULL
+ *                 ----------           ----------           ----------
+ */
+// ****************************************************************************************
+void *list_pop_front(LinkedList *list);
 
+
+// ****************************************************************************************
+// list_pop_back
+// ****************************************************************************************
+/**
+ *  Extract last value of #list, returning it
+ * @param[in]    list  Linked list to pop last value
+ * @param[out]   none
+ * @return       Pointer to data stored on the last position of #list
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *          mext   ----------    next   ----------     next   ----------     next   ----------
+ *  null <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
+ *                 |  head  |    prev   |  First |     prev   |  ....  |     prev   |  tail  |     prev
+ *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> null
+ *                 ----------           ----------            ----------            ----------
+ *
+ *  After #list_pop_back:
+ *
+ *          mext   ----------    Next   ----------    Next   ----------
+ *  NULL <-------- |        | <-------- |        | <-------- |        |
+ *                 |  HEAD  |    Prev   |  ....  |    Prev   |  TAIL  |     Prev
+ *                 |        | --------> |        | --------> |        |  --------> NULL
+ *                 ----------           ----------           ----------
+ */
+// ****************************************************************************************
+void *list_pop_back(LinkedList *list);
+
+
+// ****************************************************************************************
+// list_get_first
+// ****************************************************************************************
+/**
+ *  Get the first value of #list without extracting the node
+ * @param[in]    list  Linked list to get first value
+ * @param[out]   none
+ * @return       Pointer to data stored on the first position of #list
+ */
+// ****************************************************************************************
+void *list_get_first(LinkedList *list);
+
+
+// ****************************************************************************************
+// list_get_last
+// ****************************************************************************************
+/**
+ *  Get the last value of #list without extracting the node
+ * @param[in]    list  Linked list to get last value
+ * @param[out]   none
+ * @return       Pointer to data stored on the last position of #list
+ */
+// ****************************************************************************************
+void *list_get_last(LinkedList *list);
+
+
+// ****************************************************************************************
+// list_get_size
+// ****************************************************************************************
+/**
+ *  Get the list current size
+ * @param[in]    list  Linked list to obtain current size
+ * @param[out]   none
+ * @return       Size of list
+ */
+// ****************************************************************************************
+inline int list_get_size(LinkedList *list);
+
+
+// ****************************************************************************************
+// list_print
+// ****************************************************************************************
+/**
+ *  Print all list elements starting from the first element given a print function
+ * @param[in]    list  Linked list to be printed
+ * @param[in]    print_func  Function pointer to print value
+ * @param[out]   none
+ * @return       none
+ */
+// ****************************************************************************************
+void list_print(LinkedList *list, void (*print_func)(void *));
+
+
+//=======================================================================================//
+//																						 //
+//								    Hash Map API    								     //
+//																						 //
+//=======================================================================================//
+
+/// Private Hash Map node
+struct hashmap_node{
+    char* key;                  //< Key of key-value pair
+    void* value;                //< Value of key-value pair
+    struct hashmap_node* next;  //< Next Node on the single linked list chain
+};
+
+/// Public definition of Hash Map Node
+typedef struct hashmap_node MapNode;
+
+/// Hash Map structure
 typedef struct{
-        int usr_size;
-        int queue_size;
-        int msg_size;
-        char type;
-}packet_head_t;
+    int size;                   //< Fixed size of hash map (number of table entries)
+    MapNode **list;             //< Table of list nodes
+} HashMap;
 
-typedef struct{
-        time_t timestamp;
-        char* user;
-        char* data;
-}message_t;
 
-typedef struct{
-        char* queue_name;
-        char* creator;
-        time_t time_creation;
-        int n_messages;
-        linked_list_t* msg_list;
-		linked_list_t* blocked_readers;
-}group_t;
+// ****************************************************************************************
+// create_hash_map
+// ****************************************************************************************
+/**
+ *  Initialice a Hash Map with a fixed #size
+ * @param[in]    size  Size for the Hash Map
+ * @param[out]   none
+ * @return       Pointer to a valid Hash Map structure
+ *
+ * @details
+ *
+ * Hash Map initial state:
+ *
+ *  |---------|
+ *  |         |
+ *  |    x----+-----> NULL
+ *  |         |
+ *  |---------|
+ *  |---------|
+ *  |         |
+ *  |    x----+-----> NULL
+ *  |         |
+ *  |---------|
+ *  |---------|
+ *  |         |
+ *  |    x----+-----> NULL
+ *  |         |
+ *  |---------|
+ *
+ */
+// ****************************************************************************************
+HashMap * create_hash_map(int size);
 
-group_t* create_group(char* queue_name, char* creator);
-void print_group(void* group);
-void free_group(void* group);
 
-// Defines
-#define RECEIVE_ERROR			1
+// ****************************************************************************************
+// hash_map_set
+// ****************************************************************************************
+/**
+ *  Set a key-value pair on #map. If key already exist, update its value
+ * @param[in]    map        Hash Map to be set
+ * @param[in]    key        Key of pair key-value
+ * @param[in]    value      Value of pair key-value
+ * @return       Pointer to previous value if #key already exists, or NULL in other case
+ *
+ * @details
+ *
+ * Hash Map initial state:                          Hash Map after #hash_map_set:
+ *
+ *  |---------|                                    |---------|
+ *  |         |                                    |         |
+ *  |    x----+-----> NULL                         |    x----+-----> NULL
+ *  |         |                                    |         |
+ *  |---------|                                    |---------|
+ *  |---------|                                    |---------|       -----------------
+ *  |         |                                    |         |       | #Key | #Value |
+ *  |    x----+-----> NULL                         |    x----+-----> -----------------
+ *  |         |                                    |         |       |   Next  x-----+---> NULL
+ *  |---------|                                    |---------|       -----------------
+ *  |---------|                                    |---------|
+ *  |         |                                    |         |
+ *  |    x----+-----> NULL                         |    x----+-----> NULL
+ *  |         |                                    |         |
+ *  |---------|                                    |---------|
+ *
+ * Collision case: if a collision happens, new node is inserted in the BEGINING of the list given current position
+ *
+ * Hash Map initial state:                          Hash Map after #hash_map_set (collision case):
+ *
+ *  |---------|       ---------------              |---------|       -----------------      ---------------
+ *  |         |       | Key | Value |              |         |       | #Key | #Value |      | Key | Value |
+ *  |    x----+-----> ---------------              |    x----+-----> -----------------   -->---------------
+ *  |         |       |   Next  x---+----> NULL    |         |       |   Next  x-----+---|  |   Next  x---+---> NULL
+ *  |---------|       ---------------              |---------|       -----------------      ---------------
+ *  |---------|       ---------------              |---------|       ---------------
+ *  |         |       | Key | Value |              |         |       | Key | Value |
+ *  |    x----+-----> ---------------              |    x----+-----> ---------------
+ *  |         |       |   Next  x---+----> NULL    |         |       |   Next  x---+-----> NULL
+ *  |---------|       ---------------              |---------|       ---------------
+ *  |---------|                                    |---------|
+ *  |         |                                    |         |
+ *  |    x----+-----> NULL                         |    x----+-----> NULL
+ *  |         |                                    |         |
+ *  |---------|                                    |---------|
+ */
+// ****************************************************************************************
+void * hash_map_set(HashMap *map, char *key, void *value);
 
-#define QUEUE_CREATED 			10
-#define	QUEUE_ALREADY_EXIST		11
-#define QUEUE_DELETED			12
-#define QUEUE_DONT_EXIST		13
-#define MESSAGE_SENT			14	
-#define BLOCKED					15
+
+// ****************************************************************************************
+// hash_map_remove
+// ****************************************************************************************
+/**
+ *  Remove a key-value pair on #map given a #key
+ * @param[in]    map        Hash Map to remove pair
+ * @param[in]    key        Key of pair key-value to be removed
+ * @param[in]    free_value Function to free value
+ * @return       CLIB_OK    if key exist \n
+ *               CLIB_ERROR if key does not exist
+ *
+ * @notes        If value to be removed is needed, use #hash_map_pop insetead
+ * @details
+ *
+ * Hash Map initial state:                          Hash Map after #hash_map_remove:
+ *
+ *  |---------|                                   |---------|
+ *  |         |                                   |         |
+ *  |    x----+-----> NULL                        |    x----+-----> NULL
+ *  |         |                                   |         |
+ *  |---------|                                   |---------|
+ *  |---------|       ----------------            |---------|
+ *  |         |       | #Key | Value |            |         |
+ *  |    x----+-----> ----------------            |    x----+-----> NULL
+ *  |         |       |   Next  x----+---> NULL   |         |
+ *  |---------|       ----------------            |---------|
+ *  |---------|                                   |---------|
+ *  |         |                                   |         |
+ *  |    x----+-----> NULL                        |    x----+-----> NULL
+ *  |         |                                   |         |
+ *  |---------|                                   |---------|
+ *
+ * Collision case: if a collision happens, new node is inserted in the BEGINING of the list given current position
+ *
+ * Hash Map initial state:                                              Hash Map after #hash_map_remove (collision case):
+ *
+ *  |---------|       ----------------      ---------------           |---------|       ---------------
+ *  |         |       | #Key | Value |      | Key | Value |           |         |       | Key | Value |
+ *  |    x----+-----> ----------------   -->---------------           |    x----+-----> ---------------
+ *  |         |       |   Next  x----+---|  |   Next  x---+---> NULL  |         |       |   Next  x---+----> NULL
+ *  |---------|       ----------------      ---------------           |---------|       ---------------
+ *  |---------|       ---------------                                 |---------|       ---------------
+ *  |         |       | Key | Value |                                 |         |       | Key | Value |
+ *  |    x----+-----> ---------------                                 |    x----+-----> ---------------
+ *  |         |       |   Next  x---+-----> NULL                      |         |       |   Next  x---+----> NULL
+ *  |---------|       ---------------                                 |---------|       ---------------
+ *  |---------|                                                       |---------|
+ *  |         |                                                       |         |
+ *  |    x----+-----> NULL                                            |    x----+-----> NULL
+ *  |         |                                                       |         |
+ *  |---------|                                                       |---------|
+ */
+// ****************************************************************************************
+int hash_map_remove(HashMap *map, char *key, void (*free_value)(void *));
+
+
+// ****************************************************************************************
+// hash_map_pop
+// ****************************************************************************************
+/**
+ *  Remove a key-value pair on #map given a #key and return value
+ * @param[in]    map        Hash Map to remove pair
+ * @param[in]    key        Key of pair key-value to be removed
+ * @param[in]    free_value Function to free value
+ * @return       CLIB_OK    if key exist \n
+ *               CLIB_ERROR if key does not exist
+ *
+ * @details      Very similar to #hash_map_remove
+ */
+// ****************************************************************************************
+void * hash_map_pop(HashMap *map, char *key);
+
+
+// ****************************************************************************************
+// hash_map_get
+// ****************************************************************************************
+/**
+ *  Get a key-value pair on #map given a #key
+ * @param[in]    map        Hash Map to obtain value
+ * @param[in]    key        Key of pair key-value to obtain
+ * @return       Pointer value if #key exists, or NULL if it does not exist
+ */
+// ****************************************************************************************
+void * hash_map_get(HashMap *map, char *key);
+
+
+// ****************************************************************************************
+// hash_map_print
+// ****************************************************************************************
+/**
+ *  Print all elements on #map starting from the first position of the map,
+ * iterating over every list node on position given a print function
+ * @param[in]    map         Hash Map to be printed
+ * @param[in]    print_func  Function pointer to print value
+ * @param[out]   none
+ * @return       none
+ */
+// ****************************************************************************************
+void hash_map_print(HashMap* t , void (*print)(void*));
+
+#endif // CLIB_H
