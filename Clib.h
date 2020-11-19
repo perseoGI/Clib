@@ -41,6 +41,10 @@
 #define CLIB_ERROR                      (1)
 #define E_ELEMENT_ALREADY_EXIST         (2)
 
+#define FREE_TO_NULL(ptr) do{ \
+    free((ptr));      \
+    (ptr) = NULL;     \
+  } while(0)
 
 
 
@@ -276,6 +280,8 @@ int list_get_size(LinkedList *list);
 void list_print(LinkedList *list, void (*print_func)(void *));
 
 
+
+void list_destroy(LinkedList *list);
 
 //=======================================================================================//
 //                                                                                       //

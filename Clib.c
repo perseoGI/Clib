@@ -291,6 +291,22 @@ void list_print(LinkedList *list, void (*print_func)(void *)) {
 }
 
 
+// TODO comment out FREE_TO_NULL not working
+void list_destroy(LinkedList *list){
+    ListNode *current = list->head->prev;
+    ListNode *previous;
+    for (int i = 0; i < list->size; i++) {
+        previous = current;
+        current = current->prev;
+        /*free(previous->content);*/
+        free(previous);
+    }
+
+    free(list->head);
+    free(list->tail);
+    free(list);
+}
+
 //=======================================================================================//
 //                                                                                       //
 //                                  Hash Map API                                         //
