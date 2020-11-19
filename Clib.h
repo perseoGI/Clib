@@ -189,7 +189,7 @@ void list_push_back(LinkedList *l, void *value);
  *                 ----------           ----------           ----------
  */
 // ****************************************************************************************
-void *list_pop_front(LinkedList *list);
+void * list_pop_front(LinkedList *list);
 
 
 // ****************************************************************************************
@@ -220,7 +220,7 @@ void *list_pop_front(LinkedList *list);
  *                 ----------           ----------           ----------
  */
 // ****************************************************************************************
-void *list_pop_back(LinkedList *list);
+void * list_pop_back(LinkedList *list);
 
 
 // ****************************************************************************************
@@ -233,7 +233,7 @@ void *list_pop_back(LinkedList *list);
  * @return       Pointer to data stored on the first position of #list
  */
 // ****************************************************************************************
-void *list_get_first(LinkedList *list);
+void * list_get_first(LinkedList *list);
 
 
 // ****************************************************************************************
@@ -246,7 +246,7 @@ void *list_get_first(LinkedList *list);
  * @return       Pointer to data stored on the last position of #list
  */
 // ****************************************************************************************
-void *list_get_last(LinkedList *list);
+void * list_get_last(LinkedList *list);
 
 
 // ****************************************************************************************
@@ -259,7 +259,7 @@ void *list_get_last(LinkedList *list);
  * @return       Size of list
  */
 // ****************************************************************************************
-inline int list_get_size(LinkedList *list);
+int list_get_size(LinkedList *list);
 
 
 // ****************************************************************************************

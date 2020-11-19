@@ -104,7 +104,7 @@ void list_push_front(LinkedList *list, void *value) {
     list->head->prev->next = add;
     add->prev = list->head->prev;
     add->next = list->head;
-    list->tail->next = add;
+    list->head->prev = add;
     list->size++;
 }
 
@@ -178,7 +178,7 @@ void list_push_back(LinkedList *l, void *value) {
  *                 ----------           ----------           ----------
  */
 // ****************************************************************************************
-void *list_pop_front(LinkedList *list) {
+void * list_pop_front(LinkedList *list) {
     if (list->size) {
         ListNode *head = list->head->prev; // Get returning node
 
@@ -221,7 +221,7 @@ void *list_pop_front(LinkedList *list) {
  *                 ----------           ----------           ----------
  */
 // ****************************************************************************************
-void *list_pop_back(LinkedList *list) {
+void * list_pop_back(LinkedList *list) {
     if (list->size) {
         ListNode *lastNode = list->tail->next; // Get returning node
 
@@ -245,7 +245,7 @@ void *list_pop_back(LinkedList *list) {
  * @return       Pointer to data stored on the first position of #list
  */
 // ****************************************************************************************
-void *list_get_first(LinkedList *list) { return list->head->prev->content; }
+void * list_get_first(LinkedList *list) { return list->head->prev->content; }
 
 // ****************************************************************************************
 // list_get_last
@@ -257,7 +257,7 @@ void *list_get_first(LinkedList *list) { return list->head->prev->content; }
  * @return       Pointer to data stored on the last position of #list
  */
 // ****************************************************************************************
-void *list_get_last(LinkedList *list) { return list->tail->next->content; }
+void * list_get_last(LinkedList *list) { return list->tail->next->content; }
 
 // ****************************************************************************************
 // list_get_size
