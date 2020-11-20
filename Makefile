@@ -13,8 +13,7 @@ test: Clib.a Unity/libunity.a
 Unity/libunity.a:
 	git submodule init
 	git submodule update
-	cd Unity &&	cmake CMakeLists.txt &&	make
-	cd ..
+	cd Unity &&	cmake CMakeLists.txt &&	make && cd ..
 
 
 clean:

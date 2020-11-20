@@ -1,5 +1,6 @@
 language: C
-compiler: gcc
+#compiler: gcc
+sudo: false
 script:
   - make all
   - make test
