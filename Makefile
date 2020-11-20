@@ -1,13 +1,14 @@
+
 all: Clib.o
 	ar rcs Clib.a $<
 
 Clib.o:	Clib.h Clib.c
-	gcc -c Clib.c
+	cc -c Clib.c
 
 test: Clib.a Unity/libunity.a
 	ls -l
 	pwd
-	gcc -g $^ unit-tests.c -I Unity/src -o $@
+	cc -g $^ unit-tests.c -I Unity/src -o $@
 	./$@
 
 
