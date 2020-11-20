@@ -1,4 +1,5 @@
 # Clib
+[![Build Status](https://travis-ci.com/perseoGI/Clib.svg?branch=master)](https://travis-ci.com/perseoGI/Clib)
 
 This is a custom C library which implements some data structures every language should have but, of course, C dont.
 
