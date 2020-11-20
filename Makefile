@@ -8,7 +8,7 @@ Clib.o:	Clib.h Clib.c
 test: Clib.a Unity/libunity.a
 	ls -l
 	pwd
-	cc -g $^ unit-tests.c -I Unity/src -o $@
+	cc -g unit-tests.c -I Unity/src -o $@ $^
 	./$@
 
 
