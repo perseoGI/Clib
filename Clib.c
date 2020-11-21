@@ -62,6 +62,9 @@ LinkedList *create_linked_list(void) {
     l->head->prev = l->tail;
     l->tail->next = l->head;
     l->tail->prev = NULL;
+    // Needed to return NULL when list is empty
+    l->head->content = NULL;
+    l->tail->content = NULL;
 
     return l;
 }
@@ -242,7 +245,7 @@ void * list_pop_back(LinkedList *list) {
  *  Get the first value of #list without extracting the node
  * @param[in]    list  Linked list to get first value
  * @param[out]   none
- * @return       Pointer to data stored on the first position of #list
+ * @return       Pointer to data stored on the first position of #list (NULL if list is empty)
  */
 // ****************************************************************************************
 void * list_get_first(LinkedList *list) { return list->head->prev->content; }
@@ -254,7 +257,7 @@ void * list_get_first(LinkedList *list) { return list->head->prev->content; }
  *  Get the last value of #list without extracting the node
  * @param[in]    list  Linked list to get last value
  * @param[out]   none
- * @return       Pointer to data stored on the last position of #list
+ * @return       Pointer to data stored on the last position of #list (NULL if list is empty)
  */
 // ****************************************************************************************
 void * list_get_last(LinkedList *list) { return list->tail->next->content; }
@@ -270,6 +273,39 @@ void * list_get_last(LinkedList *list) { return list->tail->next->content; }
  */
 // ****************************************************************************************
 inline int list_get_size(LinkedList *list) { return list->size; }
+
+
+// ****************************************************************************************
+// list_get_element
+// ****************************************************************************************
+/**
+ *  Get element of list given a #postion
+ * @param[in]    list      Linked list to get element
+ * @param[in]    position  Position inside list
+ * @param[out]   none
+ * @return       Element on given position
+ */
+// ****************************************************************************************
+void * list_get_element(LinkedList *list, unsigned int position) {
+    int size = list->size;
+    ListNode *node;
+
+    if (position >= size)
+        return NULL;    // Maybe return error
+
+    if (position < size / 2){
+        node = list->head->prev;
+        while (position--)
+        /*for (int i = 0; i <= position; ++i)*/
+            node = node->prev;
+    } else {
+        node = list->tail->next;
+        for (int i = size - 1; i > position; --i)
+            node = node->next;
+    }
+
+    return node->content;
+}
 
 // ****************************************************************************************
 // list_print

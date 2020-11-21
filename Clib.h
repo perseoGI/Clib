@@ -234,7 +234,7 @@ void * list_pop_back(LinkedList *list);
  *  Get the first value of #list without extracting the node
  * @param[in]    list  Linked list to get first value
  * @param[out]   none
- * @return       Pointer to data stored on the first position of #list
+ * @return       Pointer to data stored on the first position of #list (NULL if list is empty)
  */
 // ****************************************************************************************
 void * list_get_first(LinkedList *list);
@@ -247,7 +247,7 @@ void * list_get_first(LinkedList *list);
  *  Get the last value of #list without extracting the node
  * @param[in]    list  Linked list to get last value
  * @param[out]   none
- * @return       Pointer to data stored on the last position of #list
+ * @return       Pointer to data stored on the last position of #list (NULL if list is empty)
  */
 // ****************************************************************************************
 void * list_get_last(LinkedList *list);
@@ -264,6 +264,20 @@ void * list_get_last(LinkedList *list);
  */
 // ****************************************************************************************
 int list_get_size(LinkedList *list);
+
+
+// ****************************************************************************************
+// list_get_element
+// ****************************************************************************************
+/**
+ *  Get element of list given a #postion
+ * @param[in]    list      Linked list to get element
+ * @param[in]    position  Position inside list
+ * @param[out]   none
+ * @return       Element on given position
+ */
+// ****************************************************************************************
+void * list_get_element(LinkedList *list, unsigned int position);
 
 
 // ****************************************************************************************
