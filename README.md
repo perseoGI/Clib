@@ -1,5 +1,6 @@
 # Clib
 [![Build Status](https://travis-ci.com/perseoGI/Clib.svg?branch=master)](https://travis-ci.com/perseoGI/Clib)
+[![Coverage Status](https://coveralls.io/repos/github/perseoGI/Clib/badge.svg?branch=master)](https://coveralls.io/github/perseoGI/Clib?branch=master)
 
 This is a custom C library which implements some data structures every language should have but, of course, C dont.
 
