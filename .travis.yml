@@ -9,4 +9,4 @@ script:
   - make all && make test
 
 after_success:
-  - coveralls --exclude obj --exclude test --gcov-options '\-lp'
+  - coveralls --exclude tests --exclude obj/tests --gcov-options '\-lp'
