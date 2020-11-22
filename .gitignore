@@ -1,5 +1,7 @@
 # Project files
 test
+bin/
+obj/
 
 # Prerequisites
 *.d
