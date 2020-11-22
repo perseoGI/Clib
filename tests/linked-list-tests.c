@@ -1,7 +1,7 @@
 // ****************************************************************************************
 /**
- * @file   unit-tests.c
- * @brief  Unit tests of Clib library
+ * @file   linked-list-tests.c
+ * @brief  Unit tests of linked list structure
  *
  * @details
  *
@@ -38,6 +38,7 @@ void printInt (void *node){
     int num = *(int*) node;
     printf("%d ", num);
 }
+
 
 /******************************************************************************/
 /******************** Public Test Function Implementations ********************/
@@ -349,7 +350,37 @@ void test_list_get_element(void){
         // Check first element of list remains inmutable
         TEST_ASSERT_EQUAL_INT(test_nums[i], value);
     }
+}
 
+
+// ****************************************************************************************
+// test_list_find_node
+// ****************************************************************************************
+/**
+ *  Check get element function
+ *
+ * Function under testing:
+ *  #list_get_element
+ *
+ * Check:
+ * 	- Returns NULL when list is empty
+ * 	- Element on Nth position is correct
+ */
+// ****************************************************************************************
+void test_list_find_node(void){
+    int value;
+    int size = sizeof(test_nums)/sizeof(int);
+
+
+    for (int i = 0; i < size; ++i){
+        // Populate list
+        list_push_back(list, &test_nums[i]);
+    }
+
+    for (int i = 0; i < size; ++i){
+        ListNode *node = list_find_node(list, &test_nums[i], COMPARE_INT);
+        TEST_ASSERT_EQUAL_INT(test_nums[i], *(int*)node->content);
+    }
 }
 
 
@@ -375,6 +406,7 @@ int main (){
     RUN_TEST(test_list_get_last);
 
     RUN_TEST(test_list_get_element);
+    RUN_TEST(test_list_find_node);
     return UNITY_END();
 
 }

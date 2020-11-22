@@ -30,8 +30,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
-
+#include <stdbool.h>
 
 // ****************************************************************************************
 // ****************************** Definitions & Constants *********************************
@@ -71,8 +70,18 @@ typedef struct list_node ListNode;
 typedef struct{
     ListNode* head;             //< Pointer to list head (this will not point to any content)
     ListNode* tail;             //< Pointer to list tail (this will not point to any content)
-    int size;                   //< Current Linked List size (could be calculated but this increase performance)
+    unsigned int size;                   //< Current Linked List size (could be calculated but this increase performance)
 } LinkedList;
+
+
+/// Comparator function definition
+typedef bool(*ContentComparator)(void*,void*);
+
+/// Primitive comparator functions
+extern ContentComparator COMPARE_INT;
+extern ContentComparator COMPARE_FLOAT;
+extern ContentComparator COMPARE_DOUBLE;
+extern ContentComparator COMPARE_STRING;
 
 
 // ****************************************************************************************
@@ -263,7 +272,7 @@ void * list_get_last(LinkedList *list);
  * @return       Size of list
  */
 // ****************************************************************************************
-int list_get_size(LinkedList *list);
+unsigned int list_get_size(LinkedList *list);
 
 
 // ****************************************************************************************
@@ -278,6 +287,20 @@ int list_get_size(LinkedList *list);
  */
 // ****************************************************************************************
 void * list_get_element(LinkedList *list, unsigned int position);
+
+// ****************************************************************************************
+// list_find_node
+// ****************************************************************************************
+/**
+ *  Find and return first #list node which match pattern
+ * @param[in]    list       Linked list to find node
+ * @param[in]    pattern    Content node to find
+ * @param[in]    comparator    Function which compares node contents
+ * @param[out]   none
+ * @return       Node with content matching given #pattern
+ */
+// ****************************************************************************************
+ListNode * list_find_node(LinkedList *list, void * pattern, bool(*comparator)(void*, void*));
 
 
 // ****************************************************************************************
