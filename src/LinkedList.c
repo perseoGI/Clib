@@ -122,7 +122,7 @@ LinkedList *create_linked_list(void) {
  *
  *  After #list_push_front:
  *
- *          mext   ----------    next   ----------     next   ----------     next   ----------
+ *          Next   ----------    next   ----------     next   ----------     next   ----------
  *  null <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
  *                 |  head  |    prev   | #value |     prev   |  ....  |     prev   |  tail  |     prev
  *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> null
@@ -163,7 +163,7 @@ void list_push_front(LinkedList *list, void *value) {
  *
  *  After #list_push_back:
  *
- *          mext   ----------    Next   ----------     Next   ----------     Next   ----------
+ *          Next   ----------    Next   ----------     Next   ----------     Next   ----------
  *  NULL <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
  *                 |  HEAD  |    Prev   |  ....  |     Prev   | #value |     Prev   |  TAIL  |     Prev
  *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> NULL
@@ -195,7 +195,7 @@ void list_push_back(LinkedList *l, void *value) {
  *
  * Linked List initial state:
  *
- *          mext   ----------    next   ----------     next   ----------     next   ----------
+ *          Next   ----------    next   ----------     next   ----------     next   ----------
  *  null <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
  *                 |  head  |    prev   |  First |     prev   |  ....  |     prev   |  tail  |     prev
  *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> null
@@ -203,7 +203,7 @@ void list_push_back(LinkedList *l, void *value) {
  *
  *  After #list_pop_front:
  *
- *          mext   ----------    Next   ----------    Next   ----------
+ *          Next   ----------    Next   ----------    Next   ----------
  *  NULL <-------- |        | <-------- |        | <-------- |        |
  *                 |  HEAD  |    Prev   |  ....  |    Prev   |  TAIL  |     Prev
  *                 |        | --------> |        | --------> |        |  --------> NULL
@@ -238,7 +238,7 @@ void * list_pop_front(LinkedList *list) {
  *
  * Linked List initial state:
  *
- *          mext   ----------    next   ----------     next   ----------     next   ----------
+ *          Next   ----------    next   ----------     next   ----------     next   ----------
  *  null <-------- |        | <-------- |        |  <-------- |        |  <-------- |        |
  *                 |  head  |    prev   |  First |     prev   |  ....  |     prev   |  tail  |     prev
  *                 |        | --------> |        |  --------> |        |  --------> |        |  --------> null
@@ -246,7 +246,7 @@ void * list_pop_front(LinkedList *list) {
  *
  *  After #list_pop_back:
  *
- *          mext   ----------    Next   ----------    Next   ----------
+ *          Next   ----------    Next   ----------    Next   ----------
  *  NULL <-------- |        | <-------- |        | <-------- |        |
  *                 |  HEAD  |    Prev   |  ....  |    Prev   |  TAIL  |     Prev
  *                 |        | --------> |        | --------> |        |  --------> NULL
@@ -302,6 +302,18 @@ void * list_get_last(LinkedList *list) { return list->tail->next->content; }
  */
 // ****************************************************************************************
 inline unsigned int list_get_size(LinkedList *list) { return list->size; }
+
+// ****************************************************************************************
+// list_is_empty
+// ****************************************************************************************
+/**
+ *  Check if #list is empty
+ * @param[in]    list  Linked list to check if is empty
+ * @param[out]   none
+ * @return       List empty
+ */
+// ****************************************************************************************
+inline bool list_is_empty(LinkedList *list) { return list->size == 0; }
 
 
 // ****************************************************************************************
@@ -363,6 +375,88 @@ ListNode * list_find_node(LinkedList *list, void * pattern, ContentComparator co
 
 
 // ****************************************************************************************
+// list_append_before
+// ****************************************************************************************
+/**
+ *  Append new element before current node
+ * @param[in]    list  Linked list to edit
+ * @param[in]    node  List node reference to append before it
+ * @param[in]    value Value for new node
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *          Next   ----------    next       ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | ... <-------- |        |
+ *                 |  head  |    prev       | #node  |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | ... --------> |        |  --------> null
+ *                 ----------               ----------               ----------
+ *
+ *  After #list_append_next:
+ *
+ *          Next   ----------    next       ----------    next   ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | <-------- |        | ... <-------- |        |
+ *                 |  head  |    prev       | #value |    prev   | #node  |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | --------> |        | ... --------> |        |  --------> null
+ *                 ----------               ----------           ----------               ----------
+ */
+// ****************************************************************************************
+void list_append_before(LinkedList *list, ListNode *node, void * value) {
+    ListNode *next_old = node->next;
+    ListNode *newNode = malloc(sizeof(ListNode));
+    newNode->content = value;
+    newNode->next = next_old;
+    newNode->prev = node;
+    node->next = newNode;
+    next_old->prev = newNode;
+}
+
+
+// ****************************************************************************************
+// list_append_after
+// ****************************************************************************************
+/**
+ *  Append new element after current node
+ * @param[in]    list  Linked list to edit
+ * @param[in]    node  List node reference to append after it
+ * @param[in]    value Value for new node
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *          Next   ----------    next       ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | ... <-------- |        |
+ *                 |  head  |    prev       | #node  |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | ... --------> |        |  --------> null
+ *                 ----------               ----------               ----------
+ *
+ *  After #list_append_next:
+ *
+ *          Next   ----------    next       ----------    next   ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | <-------- |        | ... <-------- |        |
+ *                 |  head  |    prev       | #node  |    prev   | #value |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | --------> |        | ... --------> |        |  --------> null
+ *                 ----------               ----------           ----------               ----------
+ */
+// ****************************************************************************************
+void list_append_after(LinkedList *list, ListNode *node, void * value) {
+    ListNode *prev_old = node->prev;
+    ListNode *newNode = malloc(sizeof(ListNode));
+    newNode->content = value;
+    newNode->next = node;
+    newNode->prev = prev_old;
+    node->prev = newNode;
+    prev_old->next = newNode;
+}
+
+
+// ****************************************************************************************
 // list_print
 // ****************************************************************************************
 /**
@@ -397,4 +491,3 @@ void list_destroy(LinkedList *list){
     free(list->tail);
     free(list);
 }
-

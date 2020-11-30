@@ -28,8 +28,9 @@
 // ****************************************************************************************
 // ****************************** Definitions & Constants *********************************
 // ****************************************************************************************
-LinkedList *list;
+HashMap *map;
 int test_nums[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+const int TEST_LEN = sizeof(test_nums)/sizeof(int);
 
 /******************************************************************************/
 /***************** Private Auxiliary Functions Implementations ****************/
@@ -56,13 +57,81 @@ int test_nums[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
  */
 // ****************************************************************************************
 void test_create_hash_map(void){
+    HashMap *map = create_hash_map(5);
 }
 
+void test_hash_map_set(void){
+    char key_buff[10];
+    int *value;
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        hash_map_set(map, key_buff, &test_nums[i]);
+    }
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        value = hash_map_get(map, key_buff);
+        TEST_ASSERT_NOT_NULL(value);
+        TEST_ASSERT_EQUAL_INT(test_nums[i], *value);
+    }
+}
 
+// Improve test because this is the same for set
+void test_hash_map_get(void){
+    char key_buff[10];
+    int *value;
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        hash_map_set(map, key_buff, &test_nums[i]);
+    }
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        value = hash_map_get(map, key_buff);
+        TEST_ASSERT_NOT_NULL(value);
+        TEST_ASSERT_EQUAL_INT(test_nums[i], *value);
+    }
+}
+
+void test_hash_map_pop(void){
+    char key_buff[10];
+    int *value;
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        hash_map_set(map, key_buff, &test_nums[i]);
+    }
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        value = hash_map_pop(map, key_buff);
+        TEST_ASSERT_NOT_NULL(value);
+        TEST_ASSERT_EQUAL_INT(test_nums[i], *value);
+        value = hash_map_pop(map, key_buff);
+        TEST_ASSERT_NULL(value);
+    }
+}
+
+void free_int(void *ptr){
+    // Dont do nothing
+};
+
+void test_hash_map_remove(void){
+    char key_buff[10];
+    int *value;
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        hash_map_set(map, key_buff, &test_nums[i]);
+    }
+    for (int i = 0; i < TEST_LEN; ++i){
+        sprintf(key_buff, "%d", test_nums[i]);
+        value = hash_map_remove(map, key_buff, free_int);
+        TEST_ASSERT_NOT_NULL(value);
+        TEST_ASSERT_EQUAL_INT(test_nums[i], *value);
+        value = hash_map_remove(map, key_buff, free_int);
+        TEST_ASSERT_NULL(value);
+    }
+}
 
 // Needed by Unity test framework. This functions will be executed before and after each test.
 void setUp(void){
-
+    map = create_hash_map(5);
 }
 
 void tearDown(void){
@@ -73,6 +142,10 @@ int main (){
 
     UNITY_BEGIN();
     RUN_TEST(test_create_hash_map);
+    RUN_TEST(test_hash_map_set);
+    /*RUN_TEST(test_hash_map_get);*/
+    RUN_TEST(test_hash_map_pop);
+    /*RUN_TEST(test_hash_map_remove);*/
     return UNITY_END();
 
 }

@@ -214,7 +214,7 @@ void * hash_map_get(HashMap *map, char *key) {
  * @return       CLIB_OK    if key exist \n
  *               CLIB_ERROR if key does not exist
  *
- * @notes        If value to be removed is needed, use #hash_map_pop insetead
+ * @note        If value to be removed is needed, use #hash_map_pop insetead
  * @details
  *
  * Hash Map initial state:                          Hash Map after #hash_map_remove:

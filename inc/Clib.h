@@ -274,6 +274,17 @@ void * list_get_last(LinkedList *list);
 // ****************************************************************************************
 unsigned int list_get_size(LinkedList *list);
 
+// ****************************************************************************************
+// list_is_empty
+// ****************************************************************************************
+/**
+ *  Check if #list is empty
+ * @param[in]    list  Linked list to check if is empty
+ * @param[out]   none
+ * @return       List empty
+ */
+// ****************************************************************************************
+bool list_is_empty(LinkedList *list);
 
 // ****************************************************************************************
 // list_get_element
@@ -301,6 +312,71 @@ void * list_get_element(LinkedList *list, unsigned int position);
  */
 // ****************************************************************************************
 ListNode * list_find_node(LinkedList *list, void * pattern, bool(*comparator)(void*, void*));
+
+// ****************************************************************************************
+// list_append_before
+// ****************************************************************************************
+/**
+ *  Append new element before current node
+ * @param[in]    list  Linked list to edit
+ * @param[in]    node  List node reference to append before it
+ * @param[in]    value Value for new node
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *          Next   ----------    next       ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | ... <-------- |        |
+ *                 |  head  |    prev       | #node  |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | ... --------> |        |  --------> null
+ *                 ----------               ----------               ----------
+ *
+ *  After #list_append_next:
+ *
+ *          Next   ----------    next       ----------    next   ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | <-------- |        | ... <-------- |        |
+ *                 |  head  |    prev       | #value |    prev   | #node  |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | --------> |        | ... --------> |        |  --------> null
+ *                 ----------               ----------           ----------               ----------
+ */
+// ****************************************************************************************
+void list_append_before(LinkedList *list, ListNode *node, void * value);
+
+
+// ****************************************************************************************
+// list_append_after
+// ****************************************************************************************
+/**
+ *  Append new element after current node
+ * @param[in]    list  Linked list to edit
+ * @param[in]    node  List node reference to append after it
+ * @param[in]    value Value for new node
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Linked List initial state:
+ *
+ *          Next   ----------    next       ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | ... <-------- |        |
+ *                 |  head  |    prev       | #node  |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | ... --------> |        |  --------> null
+ *                 ----------               ----------               ----------
+ *
+ *  After #list_append_next:
+ *
+ *          Next   ----------    next       ----------    next   ----------        next   ----------
+ *  null <-------- |        | <-------- ... |        | <-------- |        | ... <-------- |        |
+ *                 |  head  |    prev       | #node  |    prev   | #value |        prev   |  tail  |     prev
+ *                 |        | --------> ... |        | --------> |        | ... --------> |        |  --------> null
+ *                 ----------               ----------           ----------               ----------
+ */
+// ****************************************************************************************
+void list_append_after(LinkedList *list, ListNode *node, void * value);
 
 
 // ****************************************************************************************
