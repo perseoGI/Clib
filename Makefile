@@ -25,6 +25,7 @@ CLIB_L 			:= Clib.a
 # Tests objects
 LINKED_LIST_TEST := $(OBJ_TEST)/linked-list-tests.o
 HASH_MAP_TEST 	 := $(OBJ_TEST)/hash-map-tests.o
+STACK_TEST 	 	 := $(OBJ_TEST)/stack-tests.o
 
 
 all: prepare clib
@@ -37,7 +38,7 @@ $(OBJ_D)/%.o: %.c
 	$(CC) -g $(CFLAGS) $(PROFILE_FLAGS) $(LIBS_I) -c $< -o $@
 
 
-test: $(TEST_OBJ) linked-list-tests hash-map-tests
+test: $(TEST_OBJ) linked-list-tests hash-map-tests stack-tests
 
 
 linked-list-tests: $(LINKED_LIST_TEST) $(CLIB_L) $(UNITY_L)
@@ -48,6 +49,9 @@ hash-map-tests: $(HASH_MAP_TEST) $(CLIB_L) $(UNITY_L)
 	@$(CC) -g $(PROFILE_FLAGS) $(LIBS_I) -o $(BIN_D)/$@ $^
 	@./$(BIN_D)/$@
 
+stack-tests: $(STACK_TEST) $(CLIB_L) $(UNITY_L)
+	@$(CC) -g $(PROFILE_FLAGS) $(LIBS_I) -o $(BIN_D)/$@ $^
+	@./$(BIN_D)/$@
 #rm unit-tests.gcda unit-tests.gcno
 
 

@@ -607,4 +607,172 @@ void * hash_map_get(HashMap *map, char *key);
 // ****************************************************************************************
 void hash_map_print(HashMap* t , void (*print)(void*));
 
+
+
+//=======================================================================================//
+//                                                                                       //
+//                                     Stack API                                         //
+//                                                                                       //
+//=======================================================================================//
+
+
+/********************************** STRUCTURES **************************************/
+
+/// Internal Stack node
+struct single_node{
+    void* content;                   //< Pointer to storing node data
+    struct single_node* next;        //< Pointer to next node
+};
+/// External Single node defintion
+typedef struct single_node SingleNode;
+
+/// Stack data structure definition
+typedef struct {
+    unsigned int size;              //< Stack current size
+    SingleNode *top;                //< Pointer to the stack top node
+} Stack;
+
+
+// ****************************************************************************************
+// create_stack
+// ****************************************************************************************
+/**
+ *  Initialice stack structure
+ * @param[in]    none
+ * @param[out]   none
+ * @return       valid pointer to stack structure
+ */
+// ****************************************************************************************
+Stack * create_stack(void);
+
+
+// ****************************************************************************************
+// stack_push
+// ****************************************************************************************
+/**
+ *  Insert #value on the top of the #stack
+ * @param[in]    stack Stack to insert #value
+ * @param[in]    value Pointer to data to be stored on the first position of stack
+ * @param[out]   none
+ * @return       none
+ *
+ * @details
+ *
+ * Stack initial state:
+ *
+ *  ----------           ----------
+ *  |        |    Next   |        |    Next
+ *  |   TOP  | --------> |  ....  | --------> NULL
+ *  |        |           |        |
+ *  ----------           ----------
+ *
+ *  After #stack_push:
+ *
+ *  ----------           ----------           ----------
+ *  |        |    Next   |        |    Next   |        |    Next
+ *  | #value | --------> |   TOP  | --------> |  ....  | --------> NULL
+ *  |        |           | (prev) |           |        |
+ *  ----------           ----------           ----------
+ */
+// ****************************************************************************************
+void stack_push(Stack *stack, void *value);
+
+
+// ****************************************************************************************
+// stack_pop
+// ****************************************************************************************
+/**
+ *  Pop the top of the #stack
+ * @param[in]    stack Stack to pop first value
+ * @param[out]   none
+ * @return       Pointer to #stack top value
+ *
+ * @details
+ *
+ * Stack initial state:
+ *
+ *  ----------           ----------           ----------
+ *  |        |    Next   |        |    Next   |        |    Next
+ *  |   TOP  | --------> |    X   | --------> |  ....  | --------> NULL
+ *  |        |           |        |           |        |
+ *  ----------           ----------           ----------
+ *
+ *  After #stack_pop:
+ *
+ *  ----------           ----------
+ *  |        |    Next   |        |    Next
+ *  |    X   | --------> |  ....  | --------> NULL
+ *  |  (TOP) |           |        |
+ *  ----------           ----------
+ */
+// ****************************************************************************************
+void * stack_pop(Stack *stack);
+
+
+// ****************************************************************************************
+// stack_peek
+// ****************************************************************************************
+/**
+ *  Get the top value of #stack without removing it
+ * @param[in]    stack  Stack to get first value
+ * @param[out]   none
+ * @return       Pointer to data stored on the first position of #stack (NULL if stack is empty)
+ */
+// ****************************************************************************************
+void * stack_peek(Stack *stack);
+
+
+// ****************************************************************************************
+// stack_get_size
+// ****************************************************************************************
+/**
+ *  Get the #stack current size
+ * @param[in]    stack  Stack to obtain current size
+ * @param[out]   none
+ * @return       Size of #stack
+ */
+// ****************************************************************************************
+unsigned int stack_get_size(Stack *stack);
+
+
+// ****************************************************************************************
+// stack_is_empty
+// ****************************************************************************************
+/**
+ *  Check if #stack is empty
+ * @param[in]    stack  Stack to check if is empty
+ * @param[out]   none
+ * @return       Stack empty
+ */
+// ****************************************************************************************
+bool stack_is_empty(Stack *stack);
+
+
+// ****************************************************************************************
+// stack_print
+// ****************************************************************************************
+/**
+ *  Print all #stack elements starting from the top given a print function
+ * @param[in]    stack       Stack to be printed
+ * @param[in]    print_func  Function pointer to print value
+ * @param[out]   none
+ * @return       none
+ */
+// ****************************************************************************************
+void stack_print(Stack *stack, void (*print_func)(void *));
+
+
+// ****************************************************************************************
+// stack_destroy
+// ****************************************************************************************
+/**
+ *  Delete all #stack structure, freeing node to node, value to value given #free_func
+ * @param[in]    stack       Stack to be printed
+ * @param[in]    print_func  Function pointer to free value
+ * @param[out]   none
+ * @return       none
+ */
+// ****************************************************************************************
+void stack_destroy(Stack *stack, void(*free_func)(void*));
+
 #endif // CLIB_H
