@@ -23,6 +23,7 @@
 #include "Clib.h"
 #include <stdio.h>
 #include "unity.h"
+#include "fff.h"
 
 
 // ****************************************************************************************
@@ -32,6 +33,9 @@ Stack *stack;
 int test_nums[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 const int TEST_LEN = sizeof(test_nums)/sizeof(int);
 
+DEFINE_FFF_GLOBALS;
+FAKE_VOID_FUNC(print_int, void*);
+
 /******************************************************************************/
 /***************** Private Auxiliary Functions Implementations ****************/
 /******************************************************************************/
@@ -40,6 +44,8 @@ const int TEST_LEN = sizeof(test_nums)/sizeof(int);
 void free_int(void *ptr){
     // Dont do nothing
 };
+
+
 
 /******************************************************************************/
 /******************** Public Test Function Implementations ********************/
@@ -148,6 +154,22 @@ void test_stack_is_empty(void){
     }
 }
 
+void test_stack_print(void){
+
+    // Fill the stack
+    for (int i = 0; i < TEST_LEN; ++i){
+        stack_push(stack, &test_nums[i]);
+    }
+    RESET_FAKE(print_int);
+    stack_print(stack, print_int);
+    // Check print_func has been invoked as many times as the size of the stack
+    TEST_ASSERT_EQUAL(TEST_LEN, print_int_fake.call_count);
+    for (int i = 0; i < TEST_LEN; ++i){
+        // Check each invokation of print_func has been made on the correct order (stack order)
+        TEST_ASSERT_EQUAL(test_nums[TEST_LEN - i - 1], *(int*)print_int_fake.arg0_history[i]);
+    }
+}
+
 
 // Needed by Unity test framework. This functions will be executed before and after each test.
 void setUp(void){
@@ -168,6 +190,7 @@ int main (){
     RUN_TEST(test_stack_peek);
     RUN_TEST(test_stack_get_size);
     RUN_TEST(test_stack_is_empty);
+    RUN_TEST(test_stack_print);
     return UNITY_END();
 
 }
