@@ -13,13 +13,18 @@ Doble linked list implementation, allowing FIFO, LIFO, or other combinations.
 
 Hash Map implementation, allowing low complexity access.
 
+### Stack
+
+Stack data structure implementation as a LIFO.
+
 ### To Be Done
 
 - Create unit test for all public and private functions
 - Add new data structures:
-    + FIFO wrapper
-    + LIFO wrapper
-    + TODO
+    + FIFO
+    + Tree
+    + Binary Tree
+    + Heap
 - Analyze hash_code efficincy
 - Improve hash_code function to avoid hash collisions
 - Improve README
