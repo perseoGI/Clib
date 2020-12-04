@@ -21,7 +21,7 @@ TESTS_BIN 		:= $(TESTS_SRC:$(TEST_D)/%.c=$(BIN_D)/%.out)
 # Project libraries
 UNITY_L			:= Unity/libunity.a
 CLIB_L 			:= Clib.a
-FFF_I 			:= -I fff/
+FFF_I 			:= -I./fff/
 
 # Tests objects
 LINKED_LIST_TEST := $(OBJ_TEST)/linked-list-tests.o
@@ -58,6 +58,7 @@ stack-tests: $(STACK_TEST) $(CLIB_L) $(UNITY_L)
 sync_submodules:
 	@git submodule init
 	@git submodule update
+
 
 # Update Unity Test framework submodule and generate static library
 Unity/libunity.a:
