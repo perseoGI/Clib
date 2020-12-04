@@ -21,6 +21,7 @@ TESTS_BIN 		:= $(TESTS_SRC:$(TEST_D)/%.c=$(BIN_D)/%.out)
 # Project libraries
 UNITY_L			:= Unity/libunity.a
 CLIB_L 			:= Clib.a
+FFF_I 			:= -I fff/
 
 # Tests objects
 LINKED_LIST_TEST := $(OBJ_TEST)/linked-list-tests.o
@@ -35,10 +36,10 @@ clib: $(ALL_OBJ)
 
 $(OBJ_D)/%.o: %.c
 	@echo -e "Compiling $< -> $@"
-	$(CC) -g $(CFLAGS) $(PROFILE_FLAGS) $(LIBS_I) -c $< -o $@
+	$(CC) -g $(CFLAGS) $(PROFILE_FLAGS) $(LIBS_I) $(FFF_I) -c $< -o $@
 
 
-test: $(TEST_OBJ) linked-list-tests hash-map-tests stack-tests
+test: $(TEST_OBJ) sync_submodules linked-list-tests hash-map-tests stack-tests
 
 
 linked-list-tests: $(LINKED_LIST_TEST) $(CLIB_L) $(UNITY_L)
@@ -54,6 +55,9 @@ stack-tests: $(STACK_TEST) $(CLIB_L) $(UNITY_L)
 	@./$(BIN_D)/$@
 #rm unit-tests.gcda unit-tests.gcno
 
+sync_submodules:
+	@git submodule init
+	@git submodule update
 
 # Update Unity Test framework submodule and generate static library
 Unity/libunity.a:
