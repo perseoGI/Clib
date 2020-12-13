@@ -3,7 +3,7 @@
  * @file   Stack.c
  * @brief  Implementation of Stack data structure on C
  *
- * @details This source file includes a Stackk implementation.
+ * @details This source file includes a Stack implementation.
  *
  * <h2> Release History </h2>
  *

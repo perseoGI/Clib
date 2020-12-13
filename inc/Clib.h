@@ -43,9 +43,27 @@
 #define FREE_TO_NULL(ptr) do{ \
     free((ptr));      \
     (ptr) = NULL;     \
-  } while(0)
+} while(0)
 
 
+
+//=======================================================================================//
+//                                                                                       //
+//                                Common structures                                      //
+//                                                                                       //
+//=======================================================================================//
+
+/// Print function defintion
+typedef void(*PrintFunction)(void *);
+
+/// Comparator function definition
+typedef int(*ContentComparator)(void*,void*);
+
+/// Primitive comparator functions
+extern ContentComparator COMPARE_INT;
+extern ContentComparator COMPARE_FLOAT;
+extern ContentComparator COMPARE_DOUBLE;
+extern ContentComparator COMPARE_STRING;
 
 //=======================================================================================//
 //                                                                                       //
@@ -73,15 +91,6 @@ typedef struct{
     unsigned int size;                   //< Current Linked List size (could be calculated but this increase performance)
 } LinkedList;
 
-
-/// Comparator function definition
-typedef bool(*ContentComparator)(void*,void*);
-
-/// Primitive comparator functions
-extern ContentComparator COMPARE_INT;
-extern ContentComparator COMPARE_FLOAT;
-extern ContentComparator COMPARE_DOUBLE;
-extern ContentComparator COMPARE_STRING;
 
 
 // ****************************************************************************************
@@ -311,7 +320,7 @@ void * list_get_element(LinkedList *list, unsigned int position);
  * @return       Node with content matching given #pattern
  */
 // ****************************************************************************************
-ListNode * list_find_node(LinkedList *list, void * pattern, bool(*comparator)(void*, void*));
+ListNode * list_find_node(LinkedList *list, void * pattern, ContentComparator comparator);
 
 // ****************************************************************************************
 // list_append_before
@@ -775,4 +784,62 @@ void stack_print(Stack *stack, void (*print_func)(void *));
 // ****************************************************************************************
 void stack_destroy(Stack *stack, void(*free_func)(void*));
 
+
+//=======================================================================================//
+//                                                                                       //
+//                                      Tree API                                         //
+//                                                                                       //
+//=======================================================================================//
+
+
+/********************************** STRUCTURES **************************************/
+
+struct binaryTreeNode {
+    void *content;
+    struct binaryTreeNode *leftNode;
+    struct binaryTreeNode *rightNode;
+};
+
+typedef struct binaryTreeNode BinaryTreeNode;
+
+typedef struct {
+    unsigned int deepness;
+    unsigned int size;
+    BinaryTreeNode *root;
+} BinaryTree;
+
+typedef enum {
+    IN_ORDER,
+    PRE_ORDER,
+    POST_ORDER
+} TraversalOrder;
+
+/// TreeNode definition
+typedef struct{
+    void *content;                 //< Pointer to storing node data
+    LinkedList *children;           //< List of children nodes
+} TreeNode;
+
+/// Tree defintion
+typedef struct {
+    unsigned int deepness;
+    unsigned int size;
+    TreeNode *root;
+} Tree;
+
+// ****************************************************************************************
+// create_binary_tree
+// ****************************************************************************************
+/**
+ *  Initialice tree structure
+ * @param[in]    none
+ * @param[out]   none
+ * @return       valid pointer to tree structure
+ */
+// ****************************************************************************************
+BinaryTree* create_binary_tree(void);
+
+void binary_tree_insert(BinaryTree *tree, void *newContent, ContentComparator comparator);
+
+void binary_tree_print(BinaryTree *tree, PrintFunction printer, TraversalOrder order);
 #endif // CLIB_H

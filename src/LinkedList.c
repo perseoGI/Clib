@@ -35,20 +35,26 @@
 /***************** Private Auxiliary Functions Implementations ****************/
 /******************************************************************************/
 
-bool compareInts(void *pattern, void *current){
-    return *(int*)pattern == *(int*)current;
+int compareInts(void *pattern, void *current){
+    return *(int*)pattern - *(int*)current;
 }
 
-bool compareFloats(void *pattern, void *current){
-    return *(float*)pattern == *(float*)current;
+int compareFloats(void *pattern, void *current){
+    float f1 = *(float*)pattern;
+    float f2 = *(float*)current;
+    // TODO unsafe comparation betweem floats
+    return f1 <= f2? (f1 == f2 ? 0 : -1 ) : 1;
 }
 
-bool compareDoubles(void *pattern, void *current){
-    return *(double*)pattern == *(double*)current;
+int compareDoubles(void *pattern, void *current){
+    double d1 = *(double*)pattern;
+    double d2 = *(double*)current;
+    // TODO unsafe comparation betweem doubles
+    return d1 <= d2? (d1 == d2 ? 0 : -1 ) : 1;
 }
 
-bool compareStrings(void *pattern, void *current){
-    return !strcmp((char*)pattern, (char*)current);
+int compareStrings(void *pattern, void *current){
+    return strcmp((char*)pattern, (char*)current);
 }
 
 ContentComparator COMPARE_INT = compareInts;
@@ -364,7 +370,7 @@ void * list_get_element(LinkedList *list, unsigned int position) {
 ListNode * list_find_node(LinkedList *list, void * pattern, ContentComparator comparator) {
     ListNode *node = list->head->prev;
     for (unsigned int i = 0; i < list->size; ++i){
-        if (comparator(pattern, node->content)){
+        if (comparator(pattern, node->content) == 0){
             return node;
         }
         node = node->prev;
