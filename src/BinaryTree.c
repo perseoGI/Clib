@@ -21,13 +21,14 @@
 // ****************************************************************************************
 
 // ****************************************************************************************
-// ********************************** Include Files ***************************************
+// ********************************** Include Files
+// ***************************************
 // ****************************************************************************************
 #include "Clib.h"
 
 //=======================================================================================//
 //                                                                                       //
-//                                   BinaryTree API                                      //
+//                                   BinaryTree API //
 //                                                                                       //
 //=======================================================================================//
 
@@ -35,6 +36,11 @@
 /***************** Private Auxiliary Functions Implementations ****************/
 /******************************************************************************/
 
+long int comparePointers(void *pattern, void *current) {
+    return pattern - current;
+}
+
+ContentComparator COMPARE_POINTER = comparePointers;
 
 /******************************************************************************/
 /*********************** Public Functions Implementations *********************/
@@ -50,7 +56,7 @@
  * @return       valid pointer to tree structure
  */
 // ****************************************************************************************
-BinaryTree* create_binary_tree(void) {
+BinaryTree *create_binary_tree(void) {
 
     BinaryTree *tree = malloc(sizeof(BinaryTree));
     tree->deepness = 0;
@@ -59,40 +65,8 @@ BinaryTree* create_binary_tree(void) {
     return tree;
 }
 
-/*void binary_tree_insert_rec(BinaryTreeNode *currentNode, void *newContent, ContentComparator comparator){*/
-
-/*if (comparator(newContent, currentNode->content) < 0) {*/
-/*// Replace current node*/
-/*binary_tree_insert_rec(currentNode->leftNode, newContent, comparator);*/
-
-/*} else {*/
-/*// New node is greater or equal current node*/
-/*if (currentNode->rightNode){*/
-/*if (comparator(newContent, currentNode->rightNode) < 0){*/
-/*// Replace current node*/
-
-/*} else {*/
-/*binary_tree_insert_rec(currentNode->rightNode, newContent, comparator);*/
-/*}*/
-/*} else {*/
-/*// Insert as right leaf for current node*/
-/*BinaryTreeNode *newNode = malloc(sizeof(TreeNode));*/
-/*currentNode->rightNode = newNode;*/
-/*newNode->content = newContent;*/
-/*newNode->leftNode = NULL;*/
-/*newNode->rightNode = NULL;*/
-/*}*/
-/*}*/
-/*}*/
-
-/*else {*/
-/*// Start find method in order to locate correct position*/
-/*BinaryTreeNode *currentNode = tree->root;*/
-/*binary_tree_insert_rec(currentNode, newContent, comparator);*/
-/*++tree->size;*/
-/*}*/
-
-void binary_tree_insert(BinaryTree *tree, void *newContent, ContentComparator comparator){
+void binary_tree_insert(BinaryTree *tree, void *newContent,
+        ContentComparator comparator) {
 
     BinaryTreeNode *newNode = malloc(sizeof(TreeNode));
     newNode->content = newContent;
@@ -100,37 +74,38 @@ void binary_tree_insert(BinaryTree *tree, void *newContent, ContentComparator co
     newNode->rightNode = NULL;
 
     // If tree is empty, create root
-    if (tree->size == 0){
+    if (tree->size == 0) {
         // Insert first node
         tree->root = newNode;
         // Tree deepness does is 0 when only a root is available
-    }
-    else {
+    } else {
         BinaryTreeNode *currentNode = tree->root;
         bool found = false;
         unsigned int calcDeepness = 0;
-        while (!found){
+        while (!found) {
             // If new node is tinier than current node, go to left subtree
             if (comparator(newContent, currentNode->content) < 0) {
                 // If current node does not have a left child
-                if (!currentNode->leftNode){
+                if (!currentNode->leftNode) {
                     // Insert new node
                     currentNode->leftNode = newNode;
                     found = true;
                 }
                 // If current node has a left child
-                else currentNode = currentNode->leftNode;
+                else
+                    currentNode = currentNode->leftNode;
             }
             // If new node is tinier than current node, go to left subtree
             else {
                 // If current node does not have a right child
-                if (!currentNode->rightNode){
+                if (!currentNode->rightNode) {
                     // Insert new node
                     currentNode->rightNode = newNode;
                     found = true;
                 }
                 // If current node has a right child
-                else currentNode = currentNode->rightNode;
+                else
+                    currentNode = currentNode->rightNode;
             }
             ++calcDeepness;
         }
@@ -140,77 +115,43 @@ void binary_tree_insert(BinaryTree *tree, void *newContent, ContentComparator co
     ++tree->size;
 }
 
+void binary_tree_destroy_rec(BinaryTreeNode *currentNode,
+        void (*free_func)(void *)) {
+    // 1. Visit left subtree
+    if (currentNode->leftNode)
+        binary_tree_destroy_rec(currentNode->leftNode, free_func);
 
-BinaryTreeNode * binary_tree_search(BinaryTree *tree, void *pattern, ContentComparator comparator){
+    // 2. Visit right subtree
+    if (currentNode->rightNode)
+        binary_tree_destroy_rec(currentNode->rightNode, free_func);
+
+    // 3. Free current node
+    free_func(currentNode->content);
+    free(currentNode);
+}
+
+void binary_tree_destroy(BinaryTree *tree, void (*free_func)(void *)) {
+    if (tree->root)
+        binary_tree_destroy_rec(tree->root, free_func);
+}
+
+BinaryTreeNode *binary_tree_search(BinaryTree *tree, void *pattern,
+        ContentComparator comparator) {
     BinaryTreeNode *currentNode = tree->root;
-    while (currentNode){
+    while (currentNode) {
         int comparatorResult = comparator(pattern, currentNode->content);
         if (comparatorResult == 0)
             return currentNode;
         else if (comparatorResult < 0)
             currentNode = currentNode->leftNode;
-        else currentNode = currentNode->rightNode;
+        else
+            currentNode = currentNode->rightNode;
     }
     return NULL;
 }
 
-long int comparePointers(void *pattern, void *current){
-    return pattern - current;
-}
-
-ContentComparator COMPARE_POINTER = comparePointers;
-
-
-/*LinkedList * binary_tree_traversal_in_order(BinaryTree *tree){*/
-    /*BinaryTreeNode *currentNode = tree->root;*/
-    /*Stack *previousNodes = create_stack();*/
-    /*LinkedList *preOrderNodes = create_linked_list();*/
-    /*while(currentNode){*/
-        /*// If current node has been visited and added, check right subtree*/
-        /*if (list_find_node(preOrderNodes, currentNode->content, NULL)){*/
-            /*if (currentNode->rightNode){*/
-                /*// If right node has been already visited, ascend to parent of current node*/
-                /*if (list_find_node(preOrderNodes, currentNode->rightNode->content, COMPARE_POINTER)){*/
-                    /*currentNode = stack_pop(previousNodes);*/
-                /*}*/
-                /*else {*/
-                    /*stack_push(previousNodes, currentNode);*/
-                    /*currentNode = currentNode->rightNode;*/
-                /*}*/
-            /*}*/
-            /*// There is no right subtree*/
-            /*else {*/
-                /*currentNode = stack_pop(previousNodes);*/
-            /*}*/
-
-        /*}*/
-        /*// If current node has not been added yet, check left subtree*/
-        /*else {*/
-            /*// If currentNode has a left subtree*/
-            /*if (currentNode->leftNode){*/
-                /*// If left subtree has already been added, visit parent*/
-                /*if (list_find_node(preOrderNodes, currentNode->leftNode->content, COMPARE_POINTER)){*/
-                    /*// Add current node to visited nodes*/
-                    /*list_push_back(preOrderNodes, currentNode->content);*/
-                /*}*/
-                /*else {*/
-                    /*stack_push(previousNodes, currentNode);*/
-                    /*currentNode = currentNode->leftNode;*/
-                /*}*/
-
-            /*}*/
-            /*// There is no left subtree*/
-            /*else {*/
-                /*// Add current node to visited nodes*/
-                /*list_push_back(preOrderNodes, currentNode->content);*/
-            /*}*/
-        /*}*/
-    /*}*/
-    /*return preOrderNodes;*/
-/*}*/
-
-
-void binary_tree_in_order_traversal_rec(BinaryTreeNode *currentNode, LinkedList *inOrderNodes){
+void binary_tree_in_order_traversal_rec(BinaryTreeNode *currentNode,
+        LinkedList *inOrderNodes) {
 
     // 1. Visit left subtree
     if (currentNode->leftNode)
@@ -224,14 +165,8 @@ void binary_tree_in_order_traversal_rec(BinaryTreeNode *currentNode, LinkedList 
         binary_tree_in_order_traversal_rec(currentNode->rightNode, inOrderNodes);
 }
 
-LinkedList * binary_tree_in_order_traversal(BinaryTree *tree){
-    LinkedList *inOrderNodes = create_linked_list();
-    if (tree->root)
-        binary_tree_in_order_traversal_rec(tree->root, inOrderNodes);
-    return inOrderNodes;
-}
-
-void binary_tree_pre_order_traversal_rec(BinaryTreeNode *currentNode, LinkedList *preOrderNodes){
+void binary_tree_pre_order_traversal_rec(BinaryTreeNode *currentNode,
+        LinkedList *preOrderNodes) {
 
     // 1. Visit root node
     list_push_back(preOrderNodes, currentNode->content);
@@ -245,30 +180,95 @@ void binary_tree_pre_order_traversal_rec(BinaryTreeNode *currentNode, LinkedList
         binary_tree_pre_order_traversal_rec(currentNode->rightNode, preOrderNodes);
 }
 
-LinkedList * binary_tree_pre_order_traversal(BinaryTree *tree){
-    LinkedList *preOrderNodes = create_linked_list();
-    if (tree->root)
-        binary_tree_pre_order_traversal_rec(tree->root, preOrderNodes);
-    return preOrderNodes;
+void binary_tree_post_order_traversal_rec(BinaryTreeNode *currentNode,
+        LinkedList *postOrderNodes) {
+
+    // 1. Visit left subtree
+    if (currentNode->leftNode)
+        binary_tree_post_order_traversal_rec(currentNode->leftNode, postOrderNodes);
+
+    // 2. Visit right subtree
+    if (currentNode->rightNode)
+        binary_tree_post_order_traversal_rec(currentNode->rightNode,
+                postOrderNodes);
+
+    // 3. Visit root node
+    list_push_back(postOrderNodes, currentNode->content);
 }
 
-void binary_tree_print(BinaryTree *tree, PrintFunction printer, TraversalOrder order){
-    LinkedList *orderedList;
-    switch (order){
-        case IN_ORDER:
-           orderedList = binary_tree_in_order_traversal(tree);
-           break;
-        case PRE_ORDER:
-           orderedList = binary_tree_pre_order_traversal(tree);
-           break;
-        case POST_ORDER:
-           /*orderedList = binary_tree_in_order_traversal(tree);*/
-           break;
-        default:
-           break;
-           // TODO
-    }
-    list_print(orderedList, printer);
+LinkedList * binary_tree_traversal(BinaryTree *tree, TraversalOrder order) {
+    LinkedList *orderNodesList = create_linked_list();
+    if (tree->root)
+        switch (order) {
+            case IN_ORDER:
+                binary_tree_in_order_traversal_rec(tree->root, orderNodesList);
+                break;
+            case PRE_ORDER:
+                binary_tree_pre_order_traversal_rec(tree->root, orderNodesList);
+                break;
+            case POST_ORDER:
+                binary_tree_post_order_traversal_rec(tree->root, orderNodesList);
+                break;
+            default:
+                // TODO: this should never happen
+                orderNodesList = NULL;
+                break;
+        }
+    return orderNodesList;
+}
 
+void binary_tree_traversal_print(BinaryTree *tree, PrintFunction printer, TraversalOrder order) {
+    LinkedList * orderedList = binary_tree_traversal(tree, order);
+    list_print(orderedList, printer);
+}
+
+// Based on https://stackoverflow.com/a/13755911/10474917
+int binary_tree_print_rec(BinaryTreeNode *tree, PrintFunction printer,
+        int is_left, int offset, int depth, char s[20][255]) {
+    char b[20];
+    int width = 5;
+
+    if (!tree)
+        return 0;
+
+    sprintf(b, "(%03d)", *(int *)tree->content);
+
+    int left =
+        binary_tree_print_rec(tree->leftNode, printer, 1, offset, depth + 1, s);
+    int right = binary_tree_print_rec(tree->rightNode, printer, 0,
+            offset + left + width, depth + 1, s);
+
+    for (int i = 0; i < width; i++)
+        s[2 * depth][offset + left + i] = b[i];
+
+    if (depth && is_left) {
+
+        for (int i = 0; i < width + right; i++)
+            s[2 * depth - 1][offset + left + width / 2 + i] = '-';
+
+        s[2 * depth - 1][offset + left + width / 2] = '+';
+        s[2 * depth - 1][offset + left + width + right + width / 2] = '+';
+
+    } else if (depth && !is_left) {
+
+        for (int i = 0; i < left + width; i++)
+            s[2 * depth - 1][offset - width / 2 + i] = '-';
+
+        s[2 * depth - 1][offset + left + width / 2] = '+';
+        s[2 * depth - 1][offset - width / 2 - 1] = '+';
+    }
+
+    return left + width + right;
+}
+
+void binary_tree_print(BinaryTree *tree, PrintFunction printer) {
+    char s[20][255];
+    for (int i = 0; i < 20; i++)
+        sprintf(s[i], "%80s", " ");
+
+    binary_tree_print_rec(tree->root, printer, 0, 0, 0, s);
+
+    for (int i = 0; i < 20; i++)
+        printf("%s\n", s[i]);
 }
 

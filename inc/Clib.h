@@ -64,6 +64,7 @@ extern ContentComparator COMPARE_INT;
 extern ContentComparator COMPARE_FLOAT;
 extern ContentComparator COMPARE_DOUBLE;
 extern ContentComparator COMPARE_STRING;
+extern ContentComparator COMPARE_POINTER;
 
 //=======================================================================================//
 //                                                                                       //
@@ -840,6 +841,9 @@ typedef struct {
 BinaryTree* create_binary_tree(void);
 
 void binary_tree_insert(BinaryTree *tree, void *newContent, ContentComparator comparator);
+void binary_tree_destroy (BinaryTree *tree, void(*free_func)(void*));
+LinkedList * binary_tree_traversal(BinaryTree *tree, TraversalOrder order);
+void binary_tree_traversal_print(BinaryTree *tree, PrintFunction printer, TraversalOrder order);
+void binary_tree_print(BinaryTree *tree, PrintFunction printer);
 
-void binary_tree_print(BinaryTree *tree, PrintFunction printer, TraversalOrder order);
 #endif // CLIB_H
