@@ -86,8 +86,9 @@ void test_insert_node(void){
     for (int i = 0; i < TEST_LEN; ++i){
         binary_tree_insert(tree, &test_nums[i], COMPARE_INT);
         TEST_ASSERT_EQUAL_UINT(i + 1, tree->size);
-        printf("%d = %f, %d \n", i+1, log2(i+1), tree->deepness);
+        /*printf("%d = %f, %d \n", i+1, log2(i+1), tree->deepness);*/
         /*TEST_ASSERT_EQUAL_UINT(log2(i + 1), tree->deepness);*/
+        // TODO check deepness
     }
 
     binary_tree_print(tree, printInt);
